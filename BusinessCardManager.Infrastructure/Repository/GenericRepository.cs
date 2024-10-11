@@ -44,6 +44,14 @@ namespace BusinessCardManager.Infrastructure.Repository
             }
         }
 
+        // Asynchronously retrieves an entity of type T from the database based on its unique identifier.
+        public async Task<T?> GetByIdAsync(int id)
+        {
+            return await _dbSet.FindAsync(id);
+        }
+
+
+
         // Retrieves all entities from the database asynchronously
         public async Task<IEnumerable<T?>> GetAllAsync()
         {

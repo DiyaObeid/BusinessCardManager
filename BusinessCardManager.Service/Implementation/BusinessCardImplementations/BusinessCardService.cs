@@ -13,8 +13,6 @@
  * - CsvHelper: Library for handling CSV file parsing.
  * - System.Xml.Serialization: Library for handling XML file parsing.
  */
-
-
 using BusinessCardManager.Core.DTOs;
 using BusinessCardManager.Core.Entities;
 using BusinessCardManager.Core.IRepositories;
@@ -146,10 +144,6 @@ namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
         }
 
 
-
-
-
-
         // Method to get all business cards
         public async Task<IEnumerable<BusinessCard?>> GetAllBusinessCardsAsync()
         {
@@ -157,15 +151,47 @@ namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
         }
 
         // Method to get business cards by filters
-        public async Task<IEnumerable<BusinessCard?>> GetBusinessCardsByFiltersAsync(Expression<Func<BusinessCard, bool>>? filterExpression = null)
+        /// <summary>
+        /// Asynchronously retrieves business cards based on optional filter criteria.
+        /// </summary>
+        /// <param name="name">Optional filter by business card name.</param>
+        /// <param name="dob">Optional filter by date of birth.</param>
+        /// <param name="phone">Optional filter by phone number.</param>
+        /// <param name="gender">Optional filter by gender.</param>
+        /// <param name="email">Optional filter by email address.</param>
+        /// <returns>A Task containing an IEnumerable of filtered BusinessCard objects.</returns>
+        public async Task<IEnumerable<BusinessCard?>> GetBusinessCardsByFiltersAsync(
+            string? name = null,
+            DateTime? dob = null,
+            string? phone = null,
+            string? gender = null,
+            string? email = null)
         {
-            return await _businessCardRepository.GetByFiltersAsync(filterExpression); // Delegate to repository
+            
+            Expression<Func<BusinessCard, bool>> filterExpression = card =>
+            (string.IsNullOrEmpty(name) || card.Name.Contains(name)) &&
+            (!dob.HasValue || card.DateOfBirth.Date == dob.Value.Date) &&
+            (string.IsNullOrEmpty(phone) || card.Phone.Contains(phone)) &&
+            (string.IsNullOrEmpty(gender) || card.Gender.ToLower() == gender.ToLower()) &&
+            (string.IsNullOrEmpty(email) || card.Email.Contains(email));
+
+
+
+            // Get filtered business cards from the repository
+            return await _businessCardRepository.GetByFiltersAsync(filterExpression);
         }
 
+
         // Method to remove a business card
-        public async Task<ResultDto> RemoveBusinessCardAsync(BusinessCard businessCard)
+        public async Task<ResultDto> RemoveBusinessCardAsync(RemoveBusinessCardDto removeBusinessCardDto)
         {
-            return await _businessCardRepository.RemoveAsync(businessCard); // Delegate to repository
+            var businessCard = await _businessCardRepository.GetByIdAsync(removeBusinessCardDto.Id);
+            if (businessCard == null)
+            {
+                return new ResultDto { Succeeded = false, Message = "Business card not found." };
+            }
+
+            return await _businessCardRepository.RemoveAsync(businessCard);
         }
     }
 }

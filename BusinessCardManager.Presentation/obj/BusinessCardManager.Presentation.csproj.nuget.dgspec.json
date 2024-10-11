@@ -221,6 +221,9 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
+              "D:\\Projects\\BusinessCardManagerProj\\BusinessCardManager\\BusinessCardManager.Core\\BusinessCardManager.Core.csproj": {
+                "projectPath": "D:\\Projects\\BusinessCardManagerProj\\BusinessCardManager\\BusinessCardManager.Core\\BusinessCardManager.Core.csproj"
+              },
               "D:\\Projects\\BusinessCardManagerProj\\BusinessCardManager\\BusinessCardManager.Infrastructure\\BusinessCardManager.Infrastructure.csproj": {
                 "projectPath": "D:\\Projects\\BusinessCardManagerProj\\BusinessCardManager\\BusinessCardManager.Infrastructure\\BusinessCardManager.Infrastructure.csproj"
               },

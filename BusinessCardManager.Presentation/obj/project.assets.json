@@ -6131,6 +6131,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "BusinessCardManager.Core >= 1.0.0",
       "BusinessCardManager.Infrastructure >= 1.0.0",
       "BusinessCardManager.Service >= 1.0.0",
       "Microsoft.EntityFrameworkCore.Design >= 8.0.8",
@@ -6169,6 +6170,9 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
+            "D:\\Projects\\BusinessCardManagerProj\\BusinessCardManager\\BusinessCardManager.Core\\BusinessCardManager.Core.csproj": {
+              "projectPath": "D:\\Projects\\BusinessCardManagerProj\\BusinessCardManager\\BusinessCardManager.Core\\BusinessCardManager.Core.csproj"
+            },
             "D:\\Projects\\BusinessCardManagerProj\\BusinessCardManager\\BusinessCardManager.Infrastructure\\BusinessCardManager.Infrastructure.csproj": {
               "projectPath": "D:\\Projects\\BusinessCardManagerProj\\BusinessCardManager\\BusinessCardManager.Infrastructure\\BusinessCardManager.Infrastructure.csproj"
             },
