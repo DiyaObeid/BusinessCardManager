@@ -16,6 +16,9 @@ namespace BusinessCardManager.Core.IRepositories
         // Asynchronously adds a new entity to the data store
         Task<ResultDto> AddAsync(T entity);
 
+        // Asynchronously retrieves a business card by its unique identifier.
+        Task<T?> GetByIdAsync(int id);
+
         // Asynchronously retrieves all entities from the data store
         Task<IEnumerable<T?>> GetAllAsync();
 
