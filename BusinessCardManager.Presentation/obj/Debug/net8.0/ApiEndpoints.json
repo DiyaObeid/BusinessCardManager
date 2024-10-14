@@ -1,0 +1,131 @@
+[
+  {
+    "ContainingType": "BusinessCardManager.Presentation.Controller.BusinessCardController",
+    "Method": "AddBusinessCard",
+    "RelativePath": "api/BusinessCard/AddBusinessCard",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Phone",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Gender",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "DateOfBirth",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "Address",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PhotoFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BusinessCardManager.Presentation.Controller.BusinessCardController",
+    "Method": "GetBusinessCardsByFilters",
+    "RelativePath": "api/BusinessCard/FilterBusinessCards",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "dob",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "phone",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "gender",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BusinessCardManager.Presentation.Controller.BusinessCardController",
+    "Method": "GetAllBusinessCards",
+    "RelativePath": "api/BusinessCard/GetAllBusinessCards",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BusinessCardManager.Presentation.Controller.BusinessCardController",
+    "Method": "ImportBusinessCards",
+    "RelativePath": "api/BusinessCard/ImportBusinessCards",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "fileType",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BusinessCardManager.Presentation.Controller.BusinessCardController",
+    "Method": "RemoveBusinessCard",
+    "RelativePath": "api/BusinessCard/RemoveBusinessCard",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "removeBusinessCardDto",
+        "Type": "BusinessCardManager.Core.DTOs.BusinessCardDto.RemoveBusinessCardDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
