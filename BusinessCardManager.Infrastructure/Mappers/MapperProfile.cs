@@ -16,9 +16,11 @@ namespace BusinessCardManager.Infrastructure.Mappers
         public MapperProfile()
         {
             // Creates a mapping configuration between BusinessCard and AddBusinessCardDto
+            // Another mapper  between BusinessCard and BusinessCardCsvXmlDto
             // The ReverseMap() method allows for two-way mapping, enabling both 
             // conversions: BusinessCard to AddBusinessCardDto and vice versa.
             CreateMap<BusinessCard, AddBusinessCardDto>().ReverseMap();
+            CreateMap<BusinessCardCsvXmlDto, BusinessCard>().ReverseMap();
         }
     }
 }

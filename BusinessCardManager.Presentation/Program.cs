@@ -12,8 +12,12 @@ using BusinessCardManager.Infrastructure.Repository;
 using BusinessCardManager.Service.Contract.IBusinessCardContract;
 using BusinessCardManager.Service.Implementation.BusinessCardImplementations;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Register the encoding provider
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); 
 
 // Add services to the container.
 builder.Services.AddControllers(); // Registers the MVC controllers
