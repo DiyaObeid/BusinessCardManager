@@ -58,6 +58,35 @@ namespace BusinessCardManager.Presentation.Controller
             return Ok(result);
         }
 
+        // Export all of data for csv file
+        [HttpGet("export/csv")]
+        public async Task<IActionResult> ExportToCsv()
+        {
+            var result = await _businessCardService.ExportToCsvAsync();
+            return result;
+        }
+
+        // Export specific record to csv file 
+        //[HttpGet("export/csv/{id}")]
+        //public async Task<IActionResult> ExportCsv(int id)
+        //{
+        //    try
+        //    {
+        //        var fileContentResult = await _businessCardService.ExportToCsvByIdAsync(id);
+        //        return fileContentResult; // This returns the CSV file
+        //    }
+        //    catch (KeyNotFoundException ex)
+        //    {
+        //        return NotFound(ex.Message); // Handle not found
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest($"Error exporting CSV: {ex.Message}"); // Handle other errors
+        //    }
+        //}
+
+
+
     }
-    }
+}
 

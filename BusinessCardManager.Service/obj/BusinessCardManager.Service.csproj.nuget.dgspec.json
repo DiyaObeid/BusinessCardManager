@@ -248,6 +248,14 @@
             "CsvHelper": {
               "target": "Package",
               "version": "[33.0.1, )"
+            },
+            "Microsoft.AspNetCore.Mvc.Core": {
+              "target": "Package",
+              "version": "[2.2.5, )"
+            },
+            "SixLabors.ImageSharp": {
+              "target": "Package",
+              "version": "[3.1.5, )"
             }
           },
           "imports": [

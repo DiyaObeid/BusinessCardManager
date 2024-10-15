@@ -47,6 +47,16 @@
   },
   {
     "ContainingType": "BusinessCardManager.Presentation.Controller.BusinessCardController",
+    "Method": "ExportToCsv",
+    "RelativePath": "api/BusinessCard/export/csv",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BusinessCardManager.Presentation.Controller.BusinessCardController",
     "Method": "GetBusinessCardsByFilters",
     "RelativePath": "api/BusinessCard/FilterBusinessCards",
     "HttpMethod": "GET",

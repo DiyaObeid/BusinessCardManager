@@ -33,6 +33,14 @@ using BusinessCardManager.Core.DTOs.BusinessCardDto;
 using Microsoft.EntityFrameworkCore;
 using CsvHelper.Configuration;
 
+using Microsoft.AspNetCore.Mvc;
+using static System.Net.Mime.MediaTypeNames;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats;
+using Image = SixLabors.ImageSharp.Image; // This may be needed for specific image formats
+
+
 namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
 {
     public class BusinessCardService : IBusinessCardService
@@ -61,6 +69,21 @@ namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
             return await _businessCardRepository.AddAsync(MappedBusinessCard); // Delegate to repository 
         }
 
+        //private string EncodeImageToBase64(IFormFile imageFile)
+        //{
+        //    if (imageFile == null || imageFile.Length == 0)
+        //    {
+        //        return string.Empty; // Return an empty string if no file is provided
+        //    }
+
+        //    using (var memoryStream = new MemoryStream())
+        //    {
+        //        imageFile.CopyTo(memoryStream); // Copy the file content to a memory stream
+        //        var imageBytes = memoryStream.ToArray(); // Convert to byte array
+        //        return Convert.ToBase64String(imageBytes); // Convert byte array to Base64 string
+        //    }
+        //}
+
         private string EncodeImageToBase64(IFormFile imageFile)
         {
             if (imageFile == null || imageFile.Length == 0)
@@ -70,7 +93,16 @@ namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
 
             using (var memoryStream = new MemoryStream())
             {
-                imageFile.CopyTo(memoryStream); // Copy the file content to a memory stream
+                // Load the image from the file
+                using (var image = Image.Load(imageFile.OpenReadStream()))
+                {
+                    // Resize the image to a smaller size (e.g., 300x300 pixels)
+                    image.Mutate(x => x.Resize(300, 300)); // Adjust the dimensions as needed
+
+                    // Save the resized image to the memory stream
+                    image.SaveAsJpeg(memoryStream); // You can use SaveAsPng or other formats as needed
+                }
+
                 var imageBytes = memoryStream.ToArray(); // Convert to byte array
                 return Convert.ToBase64String(imageBytes); // Convert byte array to Base64 string
             }
@@ -322,6 +354,73 @@ namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
             }
 
             return await _businessCardRepository.RemoveAsync(businessCard);
+        }
+
+        // Method to Export all of data as csv file 
+        public async Task<FileContentResult> ExportToCsvAsync()
+        {
+            // Step 1: Fetch all business card records from the database
+            var businessCards = await _businessCardRepository.GetAllAsync();
+
+            if (businessCards == null || !businessCards.Any())
+            {
+                // Return an empty file if no records exist
+                return new FileContentResult(Encoding.UTF8.GetBytes(""), "text/csv")
+                {
+                    FileDownloadName = "BusinessCards.csv"
+                };
+            }
+
+            // Step 2: Convert records to CSV format
+            var csvBuilder = new StringBuilder();
+            csvBuilder.AppendLine("Name,Email,Phone,Gender,DateOfBirth,Address");
+
+            foreach (var card in businessCards)
+            {
+                csvBuilder.AppendLine($"{card.Name},{card.Email},{card.Phone},{card.Gender},{card.DateOfBirth:yyyy-MM-dd},{card.Address}");
+            }
+
+            var csvBytes = Encoding.UTF8.GetBytes(csvBuilder.ToString());
+
+            // Step 3: Return the CSV file as a downloadable response
+            return new FileContentResult(csvBytes, "text/csv")
+            {
+                FileDownloadName = "BusinessCards.csv"
+            };
+        }
+
+        // Method to Export a specific data record using id
+        public async Task<FileContentResult> ExportToCsvByIdAsync(int id)
+        {
+            // Fetch the business card by ID
+            var businessCard = await _businessCardRepository.GetByIdAsync(id);
+
+            // Check if the business card exists
+            if (businessCard == null)
+            {
+                // Handle the case when the record does not exist (e.g., throw an exception or return a specific result)
+                throw new KeyNotFoundException("Business card not found.");
+            }
+
+            // Convert the found business card to CSV format
+            var csvBuilder = new StringBuilder();
+            csvBuilder.AppendLine("Name,Email,Phone,Gender,DateOfBirth,Address");
+
+            // Create a CSV line for the found business card
+            csvBuilder.AppendLine($"{businessCard.Name},{businessCard.Email},{businessCard.Phone},{businessCard.Gender},{businessCard.DateOfBirth:yyyy-MM-dd},{businessCard.Address}");
+
+            var csvBytes = Encoding.UTF8.GetBytes(csvBuilder.ToString());
+
+            // Return the CSV file as a downloadable response
+            return new FileContentResult(csvBytes, "text/csv")
+            {
+                FileDownloadName = $"{businessCard.Name}_BusinessCard.csv"
+            };
+        }
+
+        Task<ResultDto> IBusinessCardService.ExportToCsvByIdAsync(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
