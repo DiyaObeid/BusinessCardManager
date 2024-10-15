@@ -20,10 +20,13 @@ using BusinessCardManager.Core.DTOs;
 using BusinessCardManager.Core.DTOs.BusinessCardDto;
 using BusinessCardManager.Core.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.SqlServer.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+
 
 namespace BusinessCardManager.Service.Contract.IBusinessCardContract
 {
@@ -73,6 +76,12 @@ namespace BusinessCardManager.Service.Contract.IBusinessCardContract
         /// <param name="fileType">The type of file to be imported (e.g., "csv" or "xml").</param>
         /// <returns>A Task containing a ResultDto indicating success or failure of the import process.</returns>
         Task<ResultDto> ImportBusinessCardsAsync(IFormFile file, string fileType);
+
+        // Method to export business cards as a CSV file
+        Task<FileContentResult> ExportToCsvAsync();
+
+        //Exports a business card to CSV format by its ID.
+        Task<ResultDto> ExportToCsvByIdAsync(int id);
     }
 }
 

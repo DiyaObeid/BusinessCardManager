@@ -16,6 +16,16 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder => builder.AllowAnyOrigin() // Allows requests from any origin
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
+
+
+
 // Register the encoding provider
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); 
 
@@ -34,6 +44,8 @@ builder.Services.AddEndpointsApiExplorer(); // Adds support for endpoint explora
 builder.Services.AddSwaggerGen(); // Configures Swagger for API documentation
 
 var app = builder.Build(); // Builds the application pipeline
+
+app.UseCors("AllowAllOrigins");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
