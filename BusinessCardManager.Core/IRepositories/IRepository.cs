@@ -23,7 +23,7 @@ namespace BusinessCardManager.Core.IRepositories
         Task<IEnumerable<T?>> GetAllAsync();
 
         // Asynchronously retrieves entities from the data store based on the specified filter expression
-        Task<IEnumerable<T?>> GetByFiltersAsync(Expression<Func<T, bool>>? filterExpression = null);
+        Task<IEnumerable<T>> SearchAsync(string term, string searchString);
 
         // Asynchronously removes an existing entity from the data store
         Task<ResultDto> RemoveAsync(T entity);

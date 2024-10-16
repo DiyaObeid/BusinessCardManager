@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35303.130
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessCardManager.Core", "BusinessCardManager.Core\BusinessCardManager.Core.csproj", "{4A95C750-54C8-4F99-8408-FA69C591D0AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessCardManager.Core", "BusinessCardManager.Core\BusinessCardManager.Core.csproj", "{4A95C750-54C8-4F99-8408-FA69C591D0AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessCardManager.Infrastructure", "BusinessCardManager.Infrastructure\BusinessCardManager.Infrastructure.csproj", "{B89CD9D8-83D3-4C5B-A195-CA9B92F6A6DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessCardManager.Infrastructure", "BusinessCardManager.Infrastructure\BusinessCardManager.Infrastructure.csproj", "{B89CD9D8-83D3-4C5B-A195-CA9B92F6A6DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessCardManager.Presentation", "BusinessCardManager.Presentation\BusinessCardManager.Presentation.csproj", "{84101A3B-B342-4827-9065-8AA7414D19EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessCardManager.Presentation", "BusinessCardManager.Presentation\BusinessCardManager.Presentation.csproj", "{84101A3B-B342-4827-9065-8AA7414D19EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessCardManager.Service", "BusinessCardManager.Service\BusinessCardManager.Service.csproj", "{8CA2253B-6D7D-4A29-87CF-6B774D95D7E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessCardManager.Service", "BusinessCardManager.Service\BusinessCardManager.Service.csproj", "{8CA2253B-6D7D-4A29-87CF-6B774D95D7E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{F40154B0-5297-46C0-A7DB-87DD367DB4F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{8CA2253B-6D7D-4A29-87CF-6B774D95D7E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CA2253B-6D7D-4A29-87CF-6B774D95D7E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CA2253B-6D7D-4A29-87CF-6B774D95D7E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F40154B0-5297-46C0-A7DB-87DD367DB4F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F40154B0-5297-46C0-A7DB-87DD367DB4F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F40154B0-5297-46C0-A7DB-87DD367DB4F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F40154B0-5297-46C0-A7DB-87DD367DB4F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
