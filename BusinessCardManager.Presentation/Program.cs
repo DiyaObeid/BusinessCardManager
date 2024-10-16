@@ -48,11 +48,12 @@ var app = builder.Build(); // Builds the application pipeline
 app.UseCors("AllowAllOrigins");
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger(); // Enables Swagger in development mode
-    app.UseSwaggerUI(); // Configures the Swagger UI
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "BusinessCard API V1");
+    c.RoutePrefix = "swagger"; // Use an empty string if you want Swagger to be the root page
+});
 
 app.UseHttpsRedirection(); // Redirects HTTP requests to HTTPS
 app.UseAuthorization(); // Enables authorization middleware
