@@ -48,11 +48,17 @@
   {
     "ContainingType": "BusinessCardManager.Presentation.Controller.BusinessCardController",
     "Method": "ExportToCsv",
-    "RelativePath": "api/BusinessCard/export/csv",
+    "RelativePath": "api/BusinessCard/export/csv/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -64,27 +70,12 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "name",
+        "Name": "term",
         "Type": "System.String",
         "IsRequired": false
       },
       {
-        "Name": "dob",
-        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
-        "Name": "phone",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "gender",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "email",
+        "Name": "searchString",
         "Type": "System.String",
         "IsRequired": false
       }
@@ -125,14 +116,14 @@
   {
     "ContainingType": "BusinessCardManager.Presentation.Controller.BusinessCardController",
     "Method": "RemoveBusinessCard",
-    "RelativePath": "api/BusinessCard/RemoveBusinessCard",
+    "RelativePath": "api/BusinessCard/RemoveBusinessCard{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "removeBusinessCardDto",
-        "Type": "BusinessCardManager.Core.DTOs.BusinessCardDto.RemoveBusinessCardDto",
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],

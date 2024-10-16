@@ -59,17 +59,33 @@ namespace BusinessCardManager.Infrastructure.Repository
         }
 
         // Retrieves entities based on a specified filter expression asynchronously
-        public async Task<IEnumerable<T?>> GetByFiltersAsync(Expression<Func<T, bool>>? filterExpression = null)
+        public async Task<IEnumerable<T>> SearchAsync(string term, string searchString)
         {
             IQueryable<T> query = _dbSet;
 
-            // If a filter expression is provided, apply it
-            if (filterExpression != null)
+            switch (term.ToLower())
             {
-                query = query.Where(filterExpression);
+                case "name":
+                    // Assuming T has a property named 'Name'
+                    query = query.Where(e => EF.Property<string>(e, "Name").Contains(searchString));
+                    break;
+                case "gender":
+                    query = query.Where(e => EF.Property<string>(e, "Gender").Contains(searchString));
+                    break;
+                case "email":
+                    query = query.Where(e => EF.Property<string>(e, "Email").Contains(searchString));
+                    break;
+                case "phone":
+                    query = query.Where(e => EF.Property<string>(e, "Phone").Contains(searchString));
+                    break;
+                case "address":
+                    query = query.Where(e => EF.Property<string>(e, "Address").Contains(searchString));
+                    break;
+                default:
+                    throw new ArgumentException("Invalid search term");
             }
 
-            return await query.ToListAsync(); // Return filtered entities as a list
+            return await query.ToListAsync();
         }
 
         // Removes an entity from the database asynchronously
