@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Test.Controller
 {
-    internal class BusinessCardControllerTests
+    public class BusinessCardControllerTests
     {
     }
 }
