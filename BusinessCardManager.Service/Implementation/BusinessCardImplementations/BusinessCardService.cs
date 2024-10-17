@@ -97,28 +97,26 @@ namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
         }
 
 
-
-
-        // Method to handle file upload
-        public async Task<ResultDto> ImportBusinessCardsAsync(IFormFile file, string fileType)
+        public async Task<List<BusinessCardCsvXmlDto>> ImportBusinessCardsAsync(IFormFile file, string fileType)
         {
             if (file == null || file.Length == 0)
-                return new ResultDto { Succeeded = false, Message = "File is empty." };
+                throw new Exception("No file provided or file is empty.");
 
-            if (fileType == "csv")
+            if (fileType.Equals("csv", StringComparison.OrdinalIgnoreCase))
             {
                 return await ImportFromCsvAsync(file);
             }
-            else if (fileType == "xml")
+            else if (fileType.Equals("xml", StringComparison.OrdinalIgnoreCase))
             {
                 return await ImportFromXmlAsync(file);
             }
-
-            return new ResultDto { Succeeded = false, Message = "Unsupported file type." };
+            else
+            {
+                throw new Exception("Unsupported file type. Please upload a CSV or XML file.");
+            }
         }
 
-        
-        private async Task<ResultDto> ImportFromCsvAsync(IFormFile file)
+        private async Task<List<BusinessCardCsvXmlDto>> ImportFromCsvAsync(IFormFile file)
         {
             try
             {
@@ -137,37 +135,21 @@ namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
                     // Check if records were materialized correctly
                     if (!records.Any())
                     {
-                        return new ResultDto { Succeeded = false, Message = "No records found in the CSV file." };
+                        throw new Exception("No records found in the CSV file.");
                     }
 
-                    foreach (var csvDto in records)
-                    {
-                        // Directly map BusinessCardCsvXmlDto to BusinessCard entity
-                        var businessCard = _mapper.Map<BusinessCard>(csvDto);
-
-                        // Add each business card to the database
-                        var result = await _businessCardRepository.AddAsync(businessCard);
-
-                        // Check if adding the record was successful
-                        if (!result.Succeeded)
-                        {
-                            return new ResultDto { Succeeded = false, Message = $"Failed to add business card: {result.Message}" };
-                        }
-                    }
+                    return records;
                 }
-                return new ResultDto { Succeeded = true, Message = "Business cards imported successfully." };
             }
             catch (Exception ex)
             {
-                return new ResultDto { Succeeded = false, Message = $"Error importing CSV: {ex.Message}" };
+                // Log the error and rethrow or handle the exception as needed
+                throw new Exception($"Error importing CSV: {ex.Message}", ex);
             }
         }
 
-
-
-        
         // Method to import business cards from an XML file
-        private async Task<ResultDto> ImportFromXmlAsync(IFormFile file)
+        private async Task<List<BusinessCardCsvXmlDto>> ImportFromXmlAsync(IFormFile file)
         {
             try
             {
@@ -185,7 +167,7 @@ namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
                         // Check if records were materialized correctly
                         if (csvXmlDtos == null || !csvXmlDtos.Any())
                         {
-                            return new ResultDto { Succeeded = false, Message = "No records found in the XML file." };
+                            throw new Exception("No records found in the XML file.");
                         }
 
                         foreach (var csvDto in csvXmlDtos)
@@ -199,36 +181,45 @@ namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
                             // Check if adding the record was successful
                             if (!result.Succeeded)
                             {
-                                return new ResultDto { Succeeded = false, Message = $"Failed to add business card: {result.Message}" };
+                                throw new Exception($"Failed to add business card: {result.Message}");
                             }
                         }
+
+                        // Return the list of imported records
+                        return csvXmlDtos;
                     }
                 }
-
-                return new ResultDto { Succeeded = true, Message = "Business cards imported successfully." };
             }
             catch (Exception ex)
             {
-                return new ResultDto { Succeeded = false, Message = $"Error importing XML: {ex.Message}" };
+                throw new Exception($"Error importing XML: {ex.Message}", ex);
             }
         }
 
-
-
-
         // Method to get all business cards
-        public async Task<IEnumerable<BusinessCard?>> GetAllBusinessCardsAsync()
+        public async Task<IEnumerable<BusinessCardCsvXmlDto?>> GetAllBusinessCardsAsync()
         {
-            return await _businessCardRepository.GetAllAsync(); // Delegate to repository
+            var businessCards = await _businessCardRepository.GetAllAsync(); // Delegate to repository
+            return _mapper.Map<IEnumerable<BusinessCardCsvXmlDto>>(businessCards);
         }
 
 
-        public async Task<List<BusinessCard>> SearchBusinessCards(string term, string searchString)
+        //public async Task<List<BusinessCardCsvXmlDto>> SearchBusinessCards(string term, string searchString)
+        //{
+
+        //    return (await _businessCardRepository.SearchAsync(term, searchString)).ToList();
+        //    // Map BusinessCard entities to BusinessCardCsvXmlDto
+        //    return _mapper.Map<IEnumerable<BusinessCardCsvXmlDto>>(BusinessCard);
+        //}
+
+        public async Task<IEnumerable<BusinessCardCsvXmlDto>> SearchBusinessCards(string term, string searchString)
         {
-            return (await _businessCardRepository.SearchAsync(term, searchString)).ToList();
+            // Retrieve BusinessCard entities based on search
+            var businessCards = await _businessCardRepository.SearchAsync(term, searchString);
 
-
-        }
+            // Map the collection of BusinessCard entities to a collection of BusinessCardCsvXmlDto
+            return _mapper.Map<IEnumerable<BusinessCardCsvXmlDto>>(businessCards);
+        } 
 
 
         // Method to remove a business card
