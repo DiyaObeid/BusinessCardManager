@@ -20,10 +20,13 @@ using BusinessCardManager.Core.DTOs;
 using BusinessCardManager.Core.DTOs.BusinessCardDto;
 using BusinessCardManager.Core.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.SqlServer.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+
 
 namespace BusinessCardManager.Service.Contract.IBusinessCardContract
 {
@@ -42,21 +45,22 @@ namespace BusinessCardManager.Service.Contract.IBusinessCardContract
         /// <returns>A Task containing an IEnumerable of BusinessCard objects.</returns>
         Task<IEnumerable<BusinessCard?>> GetAllBusinessCardsAsync();
 
-        /// <summary>
-        /// Asynchronously retrieves business cards based on optional filter criteria.
-        /// </summary>
-        /// <param name="name">Optional filter by business card name.</param>
-        /// <param name="dob">Optional filter by date of birth.</param>
-        /// <param name="phone">Optional filter by phone number.</param>
-        /// <param name="gender">Optional filter by gender.</param>
-        /// <param name="email">Optional filter by email address.</param>
-        /// <returns>A Task containing an IEnumerable of filtered BusinessCard objects.</returns>
-        Task<IEnumerable<BusinessCard?>> GetBusinessCardsByFiltersAsync(
-            string? name = null,
-            DateTime? dob = null,
-            string? phone = null,
-            string? gender = null,
-            string? email = null);
+
+
+        // the original fillter
+        ///// Asynchronously retrieves business cards based on optional filter criteria.
+        //Task<IEnumerable<BusinessCard?>> GetBusinessCardsByFiltersAsync(
+        //    string? name = null,
+        //    DateTime? dob = null,
+        //    string? phone = null,
+        //    string? gender = null,
+        //    string? email = null);
+
+        Task<List<BusinessCard>> SearchBusinessCards(string term, string searchString);
+
+
+
+
 
 
         /// <summary>
@@ -64,7 +68,7 @@ namespace BusinessCardManager.Service.Contract.IBusinessCardContract
         /// </summary>
         /// <param name="businessCard">Business card entity to be removed.</param>
         /// <returns>A Task containing a ResultDto indicating success or failure of the operation.</returns>
-        Task<ResultDto> RemoveBusinessCardAsync(RemoveBusinessCardDto removeBusinessCardDto);
+        Task<ResultDto> RemoveBusinessCardAsync(int id);
 
         /// <summary>
         /// Asynchronously imports business cards from a file (supports CSV and XML formats).
@@ -73,6 +77,12 @@ namespace BusinessCardManager.Service.Contract.IBusinessCardContract
         /// <param name="fileType">The type of file to be imported (e.g., "csv" or "xml").</param>
         /// <returns>A Task containing a ResultDto indicating success or failure of the import process.</returns>
         Task<ResultDto> ImportBusinessCardsAsync(IFormFile file, string fileType);
+
+        //Exports a business card to CSV format by its ID.
+        Task<FileContentResult> ExportToCsvAsync(int id);
+
+        
+       
     }
 }
 

@@ -1,7 +1,5 @@
 .vs/ 
-*.dll
-*.dll
-*.dll
-*.pdb
-*.dll
+*.cache
+*.cache
+*.cache
 *.dll

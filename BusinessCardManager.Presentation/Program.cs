@@ -12,8 +12,22 @@ using BusinessCardManager.Infrastructure.Repository;
 using BusinessCardManager.Service.Contract.IBusinessCardContract;
 using BusinessCardManager.Service.Implementation.BusinessCardImplementations;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder => builder.AllowAnyOrigin() // Allows requests from any origin
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
+
+
+
+// Register the encoding provider
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); 
 
 // Add services to the container.
 builder.Services.AddControllers(); // Registers the MVC controllers
@@ -31,12 +45,15 @@ builder.Services.AddSwaggerGen(); // Configures Swagger for API documentation
 
 var app = builder.Build(); // Builds the application pipeline
 
+app.UseCors("AllowAllOrigins");
+
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger(); // Enables Swagger in development mode
-    app.UseSwaggerUI(); // Configures the Swagger UI
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "BusinessCard API V1");
+    c.RoutePrefix = "swagger"; // Use an empty string if you want Swagger to be the root page
+});
 
 app.UseHttpsRedirection(); // Redirects HTTP requests to HTTPS
 app.UseAuthorization(); // Enables authorization middleware

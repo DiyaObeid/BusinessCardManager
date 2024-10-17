@@ -37,27 +37,49 @@ namespace BusinessCardManager.Presentation.Controller
             return Ok(businessCards);
         }
 
-        // Get business cards by filters
+        
+
+
+        // GET api/businesscards/filter
+
         [HttpGet("FilterBusinessCards")]
-        public async Task<IActionResult> GetBusinessCardsByFilters(
-            [FromQuery] string? name = null,
-            [FromQuery] DateTime? dob = null,
-            [FromQuery] string? phone = null,
-            [FromQuery] string? gender = null,
-            [FromQuery] string? email = null)
+        public async Task<IActionResult> GetBusinessCardsByFilters(string term, string searchString)
         {
-            var filteredCards = await _businessCardService.GetBusinessCardsByFiltersAsync(name, dob, phone, gender, email);
-            return Ok(filteredCards);
+            var businessCards = await _businessCardService.SearchBusinessCards(term, searchString);
+            return Ok(businessCards);
         }
 
+
+
         // Remove a business card
-        [HttpDelete("RemoveBusinessCard")]
-        public async Task<IActionResult> RemoveBusinessCard(RemoveBusinessCardDto removeBusinessCardDto)
+        [HttpDelete("RemoveBusinessCard{id}")]
+        public async Task<IActionResult> RemoveBusinessCard(int id)
         {
-            var result = await _businessCardService.RemoveBusinessCardAsync(removeBusinessCardDto);
+            var result = await _businessCardService.RemoveBusinessCardAsync(id);
             return Ok(result);
         }
 
+        // Export specific record to csv file 
+        [HttpGet("export/csv/{id}")]
+        public async Task<IActionResult> ExportToCsv(int id)
+        {
+            try
+            {
+                var fileResult = await _businessCardService.ExportToCsvAsync(id);
+                return File(fileResult.FileContents, fileResult.ContentType, fileResult.FileDownloadName);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound("Business card not found.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error exporting CSV: {ex.Message}");
+            }
+        }
+
+
+
     }
-    }
+}
 

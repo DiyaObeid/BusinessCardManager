@@ -30,6 +30,17 @@ using System.Globalization;
 using CsvHelper;
 using AutoMapper;
 using BusinessCardManager.Core.DTOs.BusinessCardDto;
+using Microsoft.EntityFrameworkCore;
+using CsvHelper.Configuration;
+
+using Microsoft.AspNetCore.Mvc;
+using static System.Net.Mime.MediaTypeNames;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats;
+using Image = SixLabors.ImageSharp.Image;
+using BusinessCardManager.Infrastructure.Extensions; // This may be needed for specific image formats
+
 
 namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
 {
@@ -59,6 +70,8 @@ namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
             return await _businessCardRepository.AddAsync(MappedBusinessCard); // Delegate to repository 
         }
 
+       
+
         private string EncodeImageToBase64(IFormFile imageFile)
         {
             if (imageFile == null || imageFile.Length == 0)
@@ -68,7 +81,16 @@ namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
 
             using (var memoryStream = new MemoryStream())
             {
-                imageFile.CopyTo(memoryStream); // Copy the file content to a memory stream
+                // Load the image from the file
+                using (var image = Image.Load(imageFile.OpenReadStream()))
+                {
+                    // Resize the image to a smaller size (e.g., 300x300 pixels)
+                    image.Mutate(x => x.Resize(300, 300)); // Adjust the dimensions as needed
+
+                    // Save the resized image to the memory stream
+                    image.SaveAsJpeg(memoryStream); // You can use SaveAsPng or other formats as needed
+                }
+
                 var imageBytes = memoryStream.ToArray(); // Convert to byte array
                 return Convert.ToBase64String(imageBytes); // Convert byte array to Base64 string
             }
@@ -95,18 +117,42 @@ namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
             return new ResultDto { Succeeded = false, Message = "Unsupported file type." };
         }
 
-        // Method to import business cards from a CSV file
+        
         private async Task<ResultDto> ImportFromCsvAsync(IFormFile file)
         {
             try
             {
-                using (var reader = new StreamReader(file.OpenReadStream()))
-                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
                 {
-                    var records = csv.GetRecords<BusinessCard>();
-                    foreach (var businessCard in records)
+                    HeaderValidated = null, // Ignore header validation
+                    MissingFieldFound = null // Ignore missing fields
+                };
+
+                using (var reader = new StreamReader(file.OpenReadStream()))
+                using (var csv = new CsvReader(reader, csvConfig))
+                {
+                    // Parse the records into BusinessCardCsvXmlDto
+                    var records = csv.GetRecords<BusinessCardCsvXmlDto>().ToList();
+
+                    // Check if records were materialized correctly
+                    if (!records.Any())
                     {
-                        await _businessCardRepository.AddAsync(businessCard);
+                        return new ResultDto { Succeeded = false, Message = "No records found in the CSV file." };
+                    }
+
+                    foreach (var csvDto in records)
+                    {
+                        // Directly map BusinessCardCsvXmlDto to BusinessCard entity
+                        var businessCard = _mapper.Map<BusinessCard>(csvDto);
+
+                        // Add each business card to the database
+                        var result = await _businessCardRepository.AddAsync(businessCard);
+
+                        // Check if adding the record was successful
+                        if (!result.Succeeded)
+                        {
+                            return new ResultDto { Succeeded = false, Message = $"Failed to add business card: {result.Message}" };
+                        }
                     }
                 }
                 return new ResultDto { Succeeded = true, Message = "Business cards imported successfully." };
@@ -117,6 +163,9 @@ namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
             }
         }
 
+
+
+        
         // Method to import business cards from an XML file
         private async Task<ResultDto> ImportFromXmlAsync(IFormFile file)
         {
@@ -127,14 +176,35 @@ namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
                     await file.CopyToAsync(stream);
                     stream.Position = 0;
 
-                    var serializer = new XmlSerializer(typeof(List<BusinessCard>));
-                    var businessCards = (List<BusinessCard>)serializer.Deserialize(stream);
-
-                    foreach (var businessCard in businessCards)
+                    // Use StreamReader with UTF-8 encoding
+                    using (var reader = new StreamReader(stream, Encoding.UTF8))
                     {
-                        await _businessCardRepository.AddAsync(businessCard);
+                        var serializer = new XmlSerializer(typeof(List<BusinessCardCsvXmlDto>));
+                        var csvXmlDtos = (List<BusinessCardCsvXmlDto>)serializer.Deserialize(reader);
+
+                        // Check if records were materialized correctly
+                        if (csvXmlDtos == null || !csvXmlDtos.Any())
+                        {
+                            return new ResultDto { Succeeded = false, Message = "No records found in the XML file." };
+                        }
+
+                        foreach (var csvDto in csvXmlDtos)
+                        {
+                            // Map BusinessCardCsvXmlDto to BusinessCard entity
+                            var businessCard = _mapper.Map<BusinessCardCsvXmlDto, BusinessCard>(csvDto);
+
+                            // Add each business card to the database
+                            var result = await _businessCardRepository.AddAsync(businessCard);
+
+                            // Check if adding the record was successful
+                            if (!result.Succeeded)
+                            {
+                                return new ResultDto { Succeeded = false, Message = $"Failed to add business card: {result.Message}" };
+                            }
+                        }
                     }
                 }
+
                 return new ResultDto { Succeeded = true, Message = "Business cards imported successfully." };
             }
             catch (Exception ex)
@@ -144,48 +214,27 @@ namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
         }
 
 
+
+
         // Method to get all business cards
         public async Task<IEnumerable<BusinessCard?>> GetAllBusinessCardsAsync()
         {
             return await _businessCardRepository.GetAllAsync(); // Delegate to repository
         }
 
-        // Method to get business cards by filters
-        /// <summary>
-        /// Asynchronously retrieves business cards based on optional filter criteria.
-        /// </summary>
-        /// <param name="name">Optional filter by business card name.</param>
-        /// <param name="dob">Optional filter by date of birth.</param>
-        /// <param name="phone">Optional filter by phone number.</param>
-        /// <param name="gender">Optional filter by gender.</param>
-        /// <param name="email">Optional filter by email address.</param>
-        /// <returns>A Task containing an IEnumerable of filtered BusinessCard objects.</returns>
-        public async Task<IEnumerable<BusinessCard?>> GetBusinessCardsByFiltersAsync(
-            string? name = null,
-            DateTime? dob = null,
-            string? phone = null,
-            string? gender = null,
-            string? email = null)
+
+        public async Task<List<BusinessCard>> SearchBusinessCards(string term, string searchString)
         {
-            
-            Expression<Func<BusinessCard, bool>> filterExpression = card =>
-            (string.IsNullOrEmpty(name) || card.Name.Contains(name)) &&
-            (!dob.HasValue || card.DateOfBirth.Date == dob.Value.Date) &&
-            (string.IsNullOrEmpty(phone) || card.Phone.Contains(phone)) &&
-            (string.IsNullOrEmpty(gender) || card.Gender.ToLower() == gender.ToLower()) &&
-            (string.IsNullOrEmpty(email) || card.Email.Contains(email));
+            return (await _businessCardRepository.SearchAsync(term, searchString)).ToList();
 
 
-
-            // Get filtered business cards from the repository
-            return await _businessCardRepository.GetByFiltersAsync(filterExpression);
         }
 
 
         // Method to remove a business card
-        public async Task<ResultDto> RemoveBusinessCardAsync(RemoveBusinessCardDto removeBusinessCardDto)
+        public async Task<ResultDto> RemoveBusinessCardAsync(int Id)
         {
-            var businessCard = await _businessCardRepository.GetByIdAsync(removeBusinessCardDto.Id);
+            var businessCard = await _businessCardRepository.GetByIdAsync(Id);
             if (businessCard == null)
             {
                 return new ResultDto { Succeeded = false, Message = "Business card not found." };
@@ -193,5 +242,39 @@ namespace BusinessCardManager.Service.Implementation.BusinessCardImplementations
 
             return await _businessCardRepository.RemoveAsync(businessCard);
         }
+
+        //  Method to Export a specific data record using id
+        public async Task<FileContentResult> ExportToCsvAsync(int id)
+        {
+            // Step 1: Fetch all business card records from the database
+            var businessCard = await _businessCardRepository.GetByIdAsync(id);
+
+            if (businessCard == null)
+            {
+                // Return an empty file if no records exist
+                return new FileContentResult(Encoding.UTF8.GetBytes(""), "text/csv")
+                {
+                    FileDownloadName = "BusinessCards.csv"
+                };
+            }
+
+            // Step 2: Convert records to CSV format
+            var csvBuilder = new StringBuilder();
+            csvBuilder.AppendLine("Name,Email,Phone,Gender,DateOfBirth,Address");
+
+            
+                csvBuilder.AppendLine($"{businessCard.Name},{businessCard.Email},{businessCard.Phone},{businessCard.Gender},{businessCard.DateOfBirth:yyyy-MM-dd},{businessCard.Address}");
+            
+
+            var csvBytes = Encoding.UTF8.GetBytes(csvBuilder.ToString());
+
+            // Step 3: Return the CSV file as a downloadable response
+            return new FileContentResult(csvBytes, "text/csv")
+            {
+                FileDownloadName = "BusinessCards.csv"
+            };
+        }
+
+       
     }
 }

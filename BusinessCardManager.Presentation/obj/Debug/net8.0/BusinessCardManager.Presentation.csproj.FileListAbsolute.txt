@@ -339,3 +339,4 @@ D:\Projects\BusinessCardManagerProj\BusinessCardManager\BusinessCardManager.Pres
 D:\Projects\BusinessCardManagerProj\BusinessCardManager\BusinessCardManager.Presentation\obj\Debug\net8.0\BusinessCardManager.Presentation.pdb
 D:\Projects\BusinessCardManagerProj\BusinessCardManager\BusinessCardManager.Presentation\obj\Debug\net8.0\BusinessCardManager.Presentation.genruntimeconfig.cache
 D:\Projects\BusinessCardManagerProj\BusinessCardManager\BusinessCardManager.Presentation\obj\Debug\net8.0\ref\BusinessCardManager.Presentation.dll
+D:\Projects\BusinessCardManagerProj\BusinessCardManager\BusinessCardManager.Presentation\bin\Debug\net8.0\SixLabors.ImageSharp.dll
