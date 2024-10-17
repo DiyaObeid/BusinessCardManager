@@ -116,13 +116,13 @@
   {
     "ContainingType": "BusinessCardManager.Presentation.Controller.BusinessCardController",
     "Method": "RemoveBusinessCard",
-    "RelativePath": "api/BusinessCard/RemoveBusinessCard{id}",
+    "RelativePath": "api/BusinessCard/RemoveBusinessCard/{Id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "id",
+        "Name": "Id",
         "Type": "System.Int32",
         "IsRequired": true
       }

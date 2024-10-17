@@ -52,10 +52,10 @@ namespace BusinessCardManager.Presentation.Controller
 
 
         // Remove a business card
-        [HttpDelete("RemoveBusinessCard{id}")]
-        public async Task<IActionResult> RemoveBusinessCard(int id)
+        [HttpDelete("RemoveBusinessCard/{Id}")]
+        public async Task<IActionResult> RemoveBusinessCard(int Id)
         {
-            var result = await _businessCardService.RemoveBusinessCardAsync(id);
+            var result = await _businessCardService.RemoveBusinessCardAsync(Id);
             return Ok(result);
         }
 

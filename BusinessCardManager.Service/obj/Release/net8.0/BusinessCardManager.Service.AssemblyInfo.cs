@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BusinessCardManager.Service")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2d0d1108ed6643eec013d49d456af5acb56b9157")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bc46c1b08e9fd935fb9dd04f8bfc9d3c54b72221")]
 [assembly: System.Reflection.AssemblyProductAttribute("BusinessCardManager.Service")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BusinessCardManager.Service")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
